@@ -1,0 +1,171 @@
+bagatelle
+balkline billiards
+baseball
+carom billiards
+eight ball
+golf
+pocket billiards
+pool
+pyramids
+straight-rail billiards
+acey-deucey
+backgammon
+checkers
+chess
+Chinese chess
+go
+goose
+Monopoly
+Nine Men’s Morris
+nyout
+Pachisi
+Polish checkers
+Scrabble
+shogi
+snooker
+Turkish checkers
+all fours
+baccarat
+belote
+bezique
+biritch
+blackjack
+bridge
+bridge whist
+canasta
+casino
+chemin de fer
+crazy eights
+cribbage
+domino
+duplicate bridge
+écarté
+eleusis
+euchre
+Fan-Tan
+faro
+five hundred
+gin rummy
+hanafuda
+hearts
+klaberjass
+loo
+nap
+old maid
+ombre
+pan
+pinochle
+piquet
+Plafond
+poker
+preference
+president
+red dog
+rummy
+samba
+sixty-six
+skat
+slap jack
+solitaire
+spades
+Trente et Quarante
+triumph
+twenty-five
+vint
+whist
+blindman’s buff
+hide-and-seek
+hopscotch
+London Bridge
+tag
+Bank Craps
+barbooth
+chuck-a-luck
+crown and anchor
+grand hazard
+hazard
+poker dice
+prisoner’s base
+twenty-six
+Age of Empires
+America’s Army
+Assassin’s Creed
+Baldur’s Gate
+BioShock
+Call of Duty
+Chessmaster
+Civilization
+Command & Conquer
+Diablo
+Disgaea
+Donkey Kong
+Doom
+Fallout
+Far Cry
+FIFA
+Final Fantasy
+God of War
+Grand Theft Auto
+Guitar Hero
+Half-Life
+Halo
+Kingdom Hearts
+The Legend of Zelda
+Lineage
+LittleBigPlanet
+Madden NFL
+Metal Gear Solid
+Myst
+Myth
+Pac-Man
+Pokémon
+Pong
+Prince of Persia
+Railroad Tycoon
+Resident Evil
+Rock Band
+Romance of the Three Kingdoms
+Second Life
+SimCity
+The Sims
+SingStar
+Space Invaders
+Spore
+StarCraft
+Street Fighter
+Super Mario Bros.
+Tetris
+Tomb Raider
+Unreal Tournament
+Wii Fit
+Wii Sports
+World of Warcraft
+Zork
+craps
+fan-tan
+keno
+roulette
+sic bo
+bingo
+Bouts-rimés
+charades
+cottabus
+crambo
+darts
+dodgeball
+domino whist
+dominoes
+double dutch
+the dozens
+ghosts
+jacks
+kho-kho (Indian tag)
+mah-jongg
+muggins
+mumblety-peg
+nim
+pick-up-sticks
+pinball
+stickball
+twenty questions
+tip-cat
