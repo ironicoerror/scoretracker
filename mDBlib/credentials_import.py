@@ -1,7 +1,6 @@
 #! /usr/bin/python3
 
 from os import path
-from sys import exit
 
 current_location = str(path.dirname(path.abspath(__file__)) + "/") 
 class ImportFromFile:
@@ -11,9 +10,8 @@ class ImportFromFile:
         try:
             fh = open(self.file_path + self.filename, "r")
             cred_string = fh.read().rstrip()
+            fh.close()
         except FileNotFoundError:
             print("Credential file not found, please create one.")
-            exit()
-        finally:
-            fh.close()
+            raise FileNotFoundError
         return cred_string
