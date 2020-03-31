@@ -24,6 +24,7 @@ def create_matchup(team1, team2):
 def update_matchup(team1, team2):
     pass
 
+#test section
 if __name__ == "__main__":
     tl.create_player("Thorsten Tester") 
     print(tl.PLAYER_LIST[0].__dict__)

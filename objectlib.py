@@ -2,7 +2,6 @@
 
 from datetime import datetime
 
-server_starttime = datetime.now()
 PLAYER_LIST = []
 GAMES_LIST = []
 
@@ -15,7 +14,10 @@ class Game:
     def played(self):
         self.last_played = datetime.now()
         self.times_played += 1
-     
+        return 0
+    def edit_name(self, name):
+        self.name = name
+        return 0
 class Player:
     def __init__(self, name):
         self.name = name
@@ -28,15 +30,14 @@ class Player:
         self.times_played += 1
         if win is True: 
             self.wins += 1
-
-def create_player(player_name):
-    new_player = Player(player_name)
-    return 0
-
-def create_game(game_name):
-    new_game = Game(game_name)
-    return 0
-
+        return 0
+    def edit_name(self, name):
+        self.name = name
+        return 0
+#section for testing
 if __name__ == "__main__":
+    Player("Nico")
+    print(PLAYER_LIST)
+    print(PLAYER_LIST[0].__dict__)
     print("\n\n------------Success-------------")
 
