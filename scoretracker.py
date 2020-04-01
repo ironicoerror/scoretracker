@@ -1,21 +1,26 @@
 #!/usr/bin/python3
 
-import trackerlib as tl 
+from flask import Flask, render_template
+import objectlib as olib 
 
+app = Flask(__name__, static_url_path="/static")
+@app.route("/home")
+def home():
+    return render_template("home.html")
 def show_players():
     print("Players currently listed:")
-    for _player in tl.PLAYER_LIST:
+    for _player in olib.PLAYER_LIST:
         print(_player.name)
     return 0
 
 def show_games():
     print("Games currently listed:")
-    for _game in tl.GAMES_LIST:
+    for _game in olib.GAMES_LIST:
         print(_game.name)
     return 0
 
 def submit_game(team1, team2, game_played, final_score):
-    tl.game_played.played()
+    olib.game_played.played()
     return 0 
 
 def create_matchup(team1, team2):
@@ -26,8 +31,5 @@ def update_matchup(team1, team2):
 
 #test section
 if __name__ == "__main__":
-    tl.create_player("Thorsten Tester") 
-    print(tl.PLAYER_LIST[0].__dict__)
-    tl.PLAYER_LIST[0].won(True)
-    print(tl.PLAYER_LIST[0].__dict__)
+    app.run(debug=True, host="0.0.0.0")
     print("\n\n------------Success-------------")
