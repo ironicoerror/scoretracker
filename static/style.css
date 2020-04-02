@@ -1,24 +1,24 @@
-body{
-	background-color: grey;
-	text-align:center;
-}
-h1.first{
-  color: black;
-  padding: 2px;
-}
-form.boxxed{
-  border-style: dashed;
-  border-radius: 4px;
-  width: 250px;
-  text-align:center; 
-}
-button{
-	 align: center;
-         border: dotted;
-         color: black;
-         padding: 20px 34px;
-	 width: 220px; 
-         text-align: center;
+	body{
+		background-color: grey;
+		text-align:center;
+	}
+	h1.first{
+	  color: black;
+	  padding: 2px;
+	}
+	form.boxxed{
+	  border-style: dashed;
+	  border-radius: 4px;
+	  width: 250px;
+	  text-align:center; 
+	}
+	button{
+		 align: center;
+		 border: dotted;
+		 color: black;
+		 padding: 20px 34px;
+		 width: 220px; 
+		 text-align: center;
          text-decoration: none;
          display: inline-block;
          font-size: 20px;

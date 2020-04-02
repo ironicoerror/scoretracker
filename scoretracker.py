@@ -4,9 +4,14 @@ from flask import Flask, render_template
 import objectlib as olib 
 
 app = Flask(__name__, static_url_path="/static")
+@app.route("/")
 @app.route("/home")
 def home():
     return render_template("home.html")
+@app.route("/submit")
+def submit():
+    return render_template("submit_game.html")
+
 def show_players():
     print("Players currently listed:")
     for _player in olib.PLAYER_LIST:
