@@ -7,31 +7,46 @@
 		<title>HeScha-Scoretracker</title>
 		<link rel="canonical" href="" />
 		<meta name="description" content="Tracking scores of various games to mongoDB">
-		<meta name="keywords" content="gaming, score, tracking, mongoDB, python" />
-		<meta property="fb:admins" content="tobi rogx" />
+		<meta name="keywords" content="gaming, score, tracker, python, flask" />
+		<meta property="og:admins" content="tobi rogx" />
 		<meta property="og:title" content="HeScha-Scoretracker" />
 		<meta property="og:type" content="website" />
 		<meta property="og:url" content="localhost" />
 		<meta property="og:image" content="" />
 		<meta property="og:description" content="Tracking scores of various games to mongoDB" />
 		<link rel="stylesheet" href="../static/style.css">
-		<script src="/script.js"></script>
+		<script src="./script.js"></script>
 	</head>
 	<body>
-				<center>
-		 <form class="boxxed" method="post">
+		<center>
+		<form class="boxxed" method="post">
 			<legend align="center">Submit Game</legend>
 			<label for="sgame">Select Game</label><br>
 			<select id="sgame" name="sgame">
 				<option value=1>first entry</option>
 				<option value=2>second entry</option>
-			</select>
-				<select id="team1" name="team" size="10" multiple>
-				<option value=1>first entry</option>
-				<option value=2>second entry</option>
-				<option value=3>third entry</option>
-			</select>
-			<input type="submit" value="Submit">
+			</select><br>
+			<table align=center>
+				<tr>
+					<th><label for="team1">Team1</label></th>
+					<th><label for="team2">Team2</label></th>
+				</tr>
+				<tr>
+					<td><select class="teams" id="team1" name="team1" size="10" multiple>
+						<option value=1>first entry</option>
+						<option value=2>second entry</option>
+						<option value=3>third entry</option>
+					</select></td>
+				
+					<td><select class="teams" id="team2" name="team2" size="10" multiple>
+						<option value=1>first entry</option>
+						<option value=2>second entry</option>
+						<option value=3>third entry</option>
+					</select></td>
+				</tr>
+				<tr>
+					<td colspan="2"><button class="game" type="submit" value="Submit">Submit Match</button></td>
+				</tr>
 		</form> 
 		</center>
 	</body>
