@@ -18,6 +18,7 @@ license_string = ImportFromFile("cred_mongoDB.lic", path_to_license).import_stri
 
 #database init
 client = pymongo.MongoClient(license_string)
+db = client["scoretracker_test"]
 
 def get_serverstatus():
     """returns the Server Status of the mongo DB Client"""

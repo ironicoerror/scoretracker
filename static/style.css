@@ -1,36 +1,40 @@
-	body{
-		background-color: grey;
-		text-align:center;
-	}
-	h1.first{
-	  color: black;
-	  padding: 2px;
-	}
-	form.boxxed{
-	  border-style: dashed;
-	  border-radius: 4px;
-	  width: 250px;
-	  text-align:center; 
-	}
-	button{
-		 align: center;
-		 border: dotted;
-		 color: black;
-		 padding: 20px 34px;
-		 width: 220px; 
-		 text-align: center;
-         text-decoration: none;
-         display: inline-block;
-         font-size: 20px;
-	 font-color: black;
-         margin: 22px 2px;
-         cursor: pointer;
+body{
+	background-color: grey;
+	text-align:center;
+}
+h1.first{
+	color: black;
+	padding: 2px;
+}
+form.boxxed{
+	border-style: dashed;
+	border-radius: 4px;
+	text-align: center; 
+}
+select.teams{
+	width: 150px;
+	margin: 0px 25px;
+	background: lightgrey;
+}
+button{
+	align: center;
+	border: dotted;
+	color: black;
+	padding: 20px 34px;
+	width: 220px; 
+	text-align: center;
+	text-decoration: none;
+	display: inline-block;
+	font-size: 20px;
+	font-color: black;
+	margin: 22px 2px;
+	cursor: pointer;
 }
 button.statistics{
-	 background-color: #61ce6a;
+	background-color: #61ce6a;
 }
 button.game{
-	 background-color: #42f4c5;
+	background-color: #42f4c5;
 }
 footer{
 	padding: 10px; 

@@ -15,7 +15,6 @@
 		<meta property="og:image" content="" />
 		<meta property="og:description" content="Tracking scores of various games to mongoDB" />
 		<link rel="stylesheet" href="../static/style.css">
-		<script src="./script.js"></script>
 	</head>
 	<body>
 		<center>
@@ -33,20 +32,21 @@
 				</tr>
 				<tr>
 					<td><select class="teams" id="team1" name="team1" size="10" multiple>
-						<option value=1>first entry</option>
-						<option value=2>second entry</option>
-						<option value=3>third entry</option>
-					</select></td>
-				
+						{% for player in players %}
+							<option value="{{ player._id }}">{{ player.name }}</option>
+						{% endfor %}
+					</select>
+					</td>
 					<td><select class="teams" id="team2" name="team2" size="10" multiple>
-						<option value=1>first entry</option>
-						<option value=2>second entry</option>
-						<option value=3>third entry</option>
+						{% for player in players %}
+							<option value="{{ player._id }}">{{ player.name }}</option>
+						{% endfor %}
 					</select></td>
 				</tr>
 				<tr>
 					<td colspan="2"><button class="game" type="submit" value="Submit">Submit Match</button></td>
 				</tr>
+			</table>
 		</form> 
 		</center>
 	</body>
