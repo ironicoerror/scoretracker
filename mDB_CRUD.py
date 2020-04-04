@@ -22,7 +22,11 @@ db = client["scoretracker_test"]
 
 def get_serverstatus():
     """returns the Server Status of the mongo DB Client"""
-    return db.command("serverstatus")
+    try:
+        db.command("serverstatus")
+    except:
+        return 1 
+    return 0 
 
 """------------------Here begins the CRUD----------------------"""
 def create_data(upload_object, collection):
@@ -37,7 +41,10 @@ def read_table(collection):
     """reads the whole collection table specified"""
     cursor = db[collection].find({})
     return cursor
-
+def read_item(collection, unique_id):
+    """reads in item in the collection and returns it as a dict"""
+    response = db[collection].find_one({"_id": ObjectId(unique_id)})
+    return response
 def update_data(update_object, collection):
     """searches for an entryid in the specified collection and updates it"""
     response = db[collection].update_one(

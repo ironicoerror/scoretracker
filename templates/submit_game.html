@@ -17,9 +17,20 @@
 		<link rel="stylesheet" href="../static/style.css">
 	</head>
 	<body>
+		<header>
+			{% with messages = get_flashed_messages(with_categories=true) %}
+				{% if messages %}
+					<ul class=flashes>
+					{% for category, message in messages %}
+						<li class="{{ category }}">{{ message }}</li>
+					{% endfor %}
+					</ul>
+				{% endif %}
+			{% endwith %}
+			<h1 class="first">scoretracker</h1>
+		</header>
 		<center>
 		<form class="boxxed" method="post">
-			<legend align="center">Submit Game</legend>
 			<label for="sgame">Select Game</label><br>
 			<select id="sgame" name="sgame">
 				<option value=1>first entry</option>

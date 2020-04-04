@@ -6,6 +6,17 @@ h1.first{
 	color: black;
 	padding: 2px;
 }
+.flashes{
+	margin: 0px;
+	list-style-type: none;
+	text-align: center;
+}
+.error{
+	background-color: red;
+}
+.info{
+	background-color: green;
+}
 form.boxxed{
 	border-style: dashed;
 	border-radius: 4px;

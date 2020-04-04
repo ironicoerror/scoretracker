@@ -16,11 +16,19 @@
 		<meta property="og:description" content="Tracking scores of various games to mongoDB" />
 		<link rel="stylesheet" href="../static/style.css">
 	</head>
-
-	<header>
-		<h1 class="first">scoretracker</h1>
-	</header>
 	<body>
+		<header>
+			{% with messages = get_flashed_messages(with_categories=true) %}
+				{% if messages %}
+					<ul class=flashes>
+					{% for category, message in messages %}
+						<li class="{{ category }}">{{ message }}</li>
+					{% endfor %}
+					</ul>
+				{% endif %}
+			{% endwith %}
+			<h1 class="first">scoretracker</h1>
+		</header>
 		<center>
 		<form class="boxxed" method="get">
 			<button class="statistics" type="submit" formaction="https://www.google.com/">View Statistics</button>
