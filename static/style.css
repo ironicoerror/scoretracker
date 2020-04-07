@@ -22,14 +22,29 @@ form.boxxed{
 	border-radius: 4px;
 	text-align: center; 
 }
-select.teams{
-	width: 150px;
-	margin: 0px 25px;
+input.score{
+	background-color: lightgrey;
+	width: 40px;
+	height: 25px;
+	text-align: center;
+	font-size: 20px;
+}
+select.games{
+	width: 180px;
+	margin: 0px 0px;
 	background: lightgrey;
+	text-align: center;
+}
+select.teams{
+	width: 180px;
+	margin: 0px 0px;
+	background: lightgrey;
+	text-align: center;
 }
 button{
 	align: center;
 	border: dotted;
+	border-radius: 4px;
 	color: black;
 	padding: 20px 34px;
 	width: 220px; 

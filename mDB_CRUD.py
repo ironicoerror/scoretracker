@@ -5,6 +5,7 @@ from sys import stdout, stderr, argv
 import pymongo
 from credentials_import import ImportFromFile
 from datetime import datetime
+from random import randint, choice, choices
 from os import path
 from bson.objectid import ObjectId
 usage_desc = """Usage:
@@ -39,11 +40,19 @@ def create_data(upload_object, collection):
         raise TypeError
 def read_table(collection):
     """reads the whole collection table specified"""
-    cursor = db[collection].find({})
-    return cursor
+    if db[collection].count_documents({}) != 0:
+        return db[collection].find({})
+    else:
+        raise Exception("Table not found. Check spelling. Valid Tables are:\n{0}".format([table["name"] for table in  db.list_collections()]))
 def read_item(collection, unique_id):
-    """reads in item in the collection and returns it as a dict"""
-    response = db[collection].find_one({"_id": ObjectId(unique_id)})
+    """reads an item in the collection from its ID and returns it as a dict"""
+    response = db[collection].find_one({"_id" : ObjectId(unique_id)})
+    return response
+def read_matchup(collection, field, searchstring):
+    """reads all items in the collection that match a certain string and returns it as a dict"""
+    if field == "_id":
+        searchstring = ObjectId(searchstring)
+    response = db[collection].find_one({field : ObjectId(unique_id)})
     return response
 def update_data(update_object, collection):
     """searches for an entryid in the specified collection and updates it"""
@@ -58,13 +67,22 @@ def delete_data(del_object, collection):
 
 def create_sample_data(collection):
     """writes a specified num of datapoints as sample to collection specified"""
-    names = ["Tobi", "Nico", "Laura", "Florian", "Paul", "Raffi"]
-    for x in range(0,len(names)):
+    game_table = read_table("games")
+    games = []
+    for game in game_table:
+        games.append(game["name"])
+    player_table = read_table("people")
+    ids = []
+    for player in player_table:
+        ids.append(player["_id"])
+    for x in range(0,10):
         test_object ={
-                    'name' : names[x],
                     'creation_date' : datetime.now(),
-                    'times_played' : randint(0, 100),
-                    'last_played' : datetime.now()
+                    'game' : choice(games),
+                    'team1' : choices(ids, k=2),
+                    'team2' : choices(ids, k=2),
+                    'score_team1' : randint(1,10),
+                    'score_team2' : randint(1,10)
         }
         last_response = create_data(test_object, collection)
     return 0
@@ -74,21 +92,18 @@ if __name__ == "__main__":
         if argv[1] == "list":
             for database in client.list_databases():
                 print(database["name"])
-        else:
-            print(usage_desc)
     elif len(argv) > 2:
         db = client[argv[1]]
         if len(argv) == 3:
-            if argv[2] == "status":
+            if argv[2] == "status" or "s":
                 print(get_serverstatus())
-            elif argv[2] == "list":
+            elif argv[2] == "list" or "l":
                 for table in db.list_collections():
                     print(table["name"])
         elif len(argv) == 4:
-            if argv[2] == "read":
+            if argv[2] == "read" or "r":
                 #pretty print of the specified table
                 data = read_table(argv[3])
-                print(type(data))
                 i = 0
                 for entry in data:
                     if i == 0:
@@ -99,7 +114,5 @@ if __name__ == "__main__":
                     for key, value in entry.items():
                         print(value, end="\t")
                     print("\n")
-        else:
-            print(usage_desc)
     else:
         print(usage_desc) 
