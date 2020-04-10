@@ -15,6 +15,7 @@
 		<meta property="og:image" content="" />
 		<meta property="og:description" content="Tracking scores of various games to mongoDB" />
 		<link rel="stylesheet" href="../static/style.css">
+		<script src="../static/script.js"></script>
 	</head>
 	<body>
 		<header>
@@ -34,7 +35,7 @@
 			</table>
 		</header>
 		<center>
-		<form class="boxxed" method="post">
+		<form name="submit_form" class="boxxed" onsubmit="return validateForm()" method="post">
 			<label for="sgame"><strong>Select Game</strong></label><br>
 			<select class="games" id="sgame" name="sgame">
 				{% for game in games %}
