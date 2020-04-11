@@ -24,6 +24,7 @@ def stats():
 @app.route("/submit", methods=["POST", "GET"])
 def submit():
     if request.method == "POST":
+        print(request.data.decode())
         if len(request.form) == 5:
             try:
                 update_gamedata(request.form["sgame"])
