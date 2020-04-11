@@ -19,36 +19,30 @@
 	</head>
 	<body>
 		<header>
-			{% with messages = get_flashed_messages(with_categories=true) %}
-				{% if messages %}
-					<ul class=flashes>
-					{% for category, message in messages %}
-						<li class="{{ category }}">{{ message }}</li>
-					{% endfor %}
-					</ul>
-				{% endif %}
-			{% endwith %}
 			<table width="100%">
 				<th align=left style="width:20%"><form action="/home"><button class="back" type="submit">&#8592;</button></form>
 				<th style="width:60%"><h1 class="first">scoretracker</h1></th>
 				<th style="width:20%"></th>
 			</table>
+			<div class="flashes">
+			{% with messages = get_flashed_messages(with_categories=true) %}
+				{% if messages %}
+					{% for category, message in messages %}
+						<p class="{{ category }}">{{ message }}</p>
+					{% endfor %}
+				{% endif %}
+			{% endwith %}
+			</div>
 		</header>
 		<center>
-		<br><button onclick="addPlayer()">Add Player</button>
 		<form name="submit_form" class="boxxed" onsubmit="return validateForm()" method="post">
-			<label for="sgame"><strong>Select Game</strong></label><br>
+						<label for="sgame"><strong>Select Game</strong></label><br>
 			<select class="games" id="sgame" name="sgame">
 				{% for game in games %}
 				<option value="{{ game._id }}">{{ game.name }}</option>
 				{% endfor %}
 			</select><br>
 			<table align=center>
-				<tr>
-					<th style="width:40px"><label for="team1">Team1</label></th>
-					<th style="width:30px"></th>
-					<th style="width:40px"><label for="team2">Team2</label></th>
-				</tr>
 				<tr>
 					<td align=right><input class="score" type="number" min="0" id="score_team1" name="score_team1" placeholder="0"></td>
 					<td></td>
@@ -60,7 +54,7 @@
 							<option value="{{ player._id }}">{{ player.name }}</option>
 						{% endfor %}
 					</select></td>
-					<td>image</td>	
+					<td><img src="../static/art_vs.jpeg" alt="VS" width="50px" height="30px"></td>	
 					<td><select class="teams" id="team2" name="team2" size="10" multiple>
 						{% for player in players %}
 							<option value="{{ player._id }}">{{ player.name }}</option>
@@ -72,6 +66,8 @@
 				</tr>
 			</table>
 		</form> 
+		<button class="add"onclick="addGame()">Add Game</button>
+		<button class="add" onclick="addPlayer()">Add Player</button>
 		</center>
 	</body>
 </html>

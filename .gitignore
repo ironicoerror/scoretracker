@@ -1,4 +1,4 @@
 __pycache__/
 
-mDBlib/license_files/*.lic
-mDBlib/__pycache__/
+license_files/*.lic
+

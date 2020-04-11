@@ -1,7 +1,7 @@
 #!/usr/bin/python3
 from datetime import datetime
 from flask import Flask, render_template, request, redirect, url_for, flash
-import objectlib as olib 
+import objectlib as olib
 import mDB_CRUD as mdb
 
 app = Flask(__name__, static_url_path="/static")
@@ -10,6 +10,7 @@ app.secret_key = b';\xf5!\xa7\xfa\xba\x9b\x94P\x15\n.V\xb9\x0c\xe7'
 @app.route("/")
 @app.route("/home")
 def home():
+    """checks if the mongoDB is reachable from current device and loads the home.html template"""
     online = not mdb.get_serverstatus()
     if online:
         flash("Server online.", "info")
@@ -17,15 +18,16 @@ def home():
         flash("Trouble reaching Database", "error")
     return render_template("home.html")
 
-@app.route("/stats")
-def stats():
-    return render_template("stats.html")
-
 @app.route("/submit", methods=["POST", "GET"])
 def submit():
+    """on GET: loads player and game table and fills the dropdown lists
+    on POST: handles the three posible post methods from the form or addplayer/addgame"""
+    if request.method == "GET":
+        players = list(mdb.read_table("people"))
+        games = mdb.read_table("games")
+        return render_template("submit_game.html", players=players, games=games)
     if request.method == "POST":
-        print(request.data.decode())
-        if len(request.form) == 5:
+        if not request.is_json: #form data
             try:
                 update_gamedata(request.form["sgame"])
                 for player in request.form.getlist("team1"):
@@ -38,15 +40,34 @@ def submit():
                 flash("Trouble reaching database.\n{0}".format(e), "error")
             finally:
                 return redirect(url_for("submit"))
-        else:
-            flash("Please enter all information.", "error")
-            return redirect(url_for("submit")) 
-    if request.method == "GET":
-        players = list(mdb.read_table("people"))
-        games = mdb.read_table("games")
-        return render_template("submit_game.html", players=players, games=games)
+        if request.is_json: #from scipt.js
+            if request.headers.get("Js-Function", type=str) == "addGame":
+                create_game(request.get_json()["game_name"])
+            elif request.headers.get("Js-Function", type=str) == "addPlayer":
+                create_player(request.get_json()["player_name"])
+            return redirect(url_for("submit"))
 
+@app.route("/stats")
+def stats():
+    """on GET: loads data from database and gets the connections between players, games and matchups
+    on POST: ..."""
+    return render_template("stats.html")
+
+def create_game(game_name):
+    """creates a game in the games table with the stats from olib"""
+    mdb.create_data(olib.Game(game_name).__dict__, "games")
+    return 0
+
+def create_player(player_name):
+    """creates a player in the player table with the stats from olib"""
+    mdb.create_data(olib.Player(player_name).__dict__, "people")
+    return 0
+def create_player(player_name):
+    """creates a player in the player table with the stats from olib"""
+    mdb.create_data(olib.Player(player_name).__dict__, "people")
+    return 0
 def update_gamedata(game_id):
+    """sets the gamedata and updates it in the game table"""
     game_data = mdb.read_item("games", game_id)
     game_data["times_played"] += 1
     game_data["last_played"] = datetime.now()
@@ -54,12 +75,14 @@ def update_gamedata(game_id):
     return 0
 
 def update_playerdata(player_id):
+    """sets the playerdata and updates it in the database"""
     player_data = mdb.read_item("people", player_id)
     player_data["times_played"] += 1
     player_data["last_played"] = datetime.now()
     response = mdb.update_data(player_data, "people")
     return 0
 def create_matchup(form_data):
+    """creates a matchup from the formdata and uploads it to the matchups table"""
     new_matchup = {
             "creation_date": datetime.now(),
             "game_played": form_data["sgame"],
