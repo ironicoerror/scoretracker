@@ -1,4 +1,5 @@
 #!/usr/bin/python3
+from sys import argv
 from datetime import datetime
 from flask import Flask, render_template, request, redirect, url_for, flash
 import objectlib as olib
@@ -30,10 +31,15 @@ def submit():
         if not request.is_json: #form data
             try:
                 update_gamedata(request.form["sgame"])
+                if int(request.form["score_team1"]) > int(request.form["score_team2"]):
+                    t1_won, t2_won = True, False
+                elif int(request.form["score_team1"]) < int(request.form["score_team2"]):
+                    t1_won, t2_won = False, True
+                else: t1_won, t2_won = False, False  
                 for player in request.form.getlist("team1"):
-                    update_playerdata(player)
+                    update_playerdata(player, t1_won)
                 for player in request.form.getlist("team2"):
-                    update_playerdata(player)
+                    update_playerdata(player, t2_won)
                 create_matchup(request.form)
                 flash("Success.", "info")
             except Exception as e:
@@ -74,11 +80,15 @@ def update_gamedata(game_id):
     response = mdb.update_data(game_data, "games")
     return 0
 
-def update_playerdata(player_id):
+def update_playerdata(player_id, won):
     """sets the playerdata and updates it in the database"""
     player_data = mdb.read_item("people", player_id)
     player_data["times_played"] += 1
     player_data["last_played"] = datetime.now()
+    if won:
+        player_data["wins"] += 1
+    if not won:
+        player_data["losses"] += 1
     response = mdb.update_data(player_data, "people")
     return 0
 def create_matchup(form_data):
@@ -88,12 +98,20 @@ def create_matchup(form_data):
             "game_played": form_data["sgame"],
             "team1": form_data.getlist("team1"),
             "team2": form_data.getlist("team2"),
-            "score_team1": form_data["score_team1"],
-            "score_team2": form_data["score_team2"]
+            "score_team1": int(form_data["score_team1"]),
+            "score_team2": int(form_data["score_team2"])
             }
     mdb.create_data(new_matchup, "matchups") 
     return 0
 #test section
 if __name__ == "__main__":
-    app.run(debug=True, host="0.0.0.0")
+    usage_desc = """
+    Usage: {0} <license_file>
+    Note: Please give the complete link to the license file /home/...
+    """
+    if len(argv) == 3:
+        mdb.LICENSE_STRING = mdb.set_credentials(argv[1])
+        mdb.CLIENT, mdb.DB = mdb.db_init(argv[2])
+        app.run(debug=True, host="0.0.0.0")
+    else: print(usage_desc)
     print("\n\n------------Success-------------")

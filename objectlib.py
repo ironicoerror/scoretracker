@@ -10,30 +10,18 @@ class Game:
         self.name = name
         self.created_on = datetime.now()
         self.times_played = 0
+        self.last_played = None
         GAMES_LIST.append(self)
-    def played(self):
-        self.last_played = datetime.now()
-        self.times_played += 1
-        return 0
-    def edit_name(self, name):
-        self.name = name
-        return 0
 class Player:
     def __init__(self, name):
         self.name = name
         self.created_on = datetime.now()
         self.times_played = 0
         self.wins = 0
+        self.losses = 0
+        self.last_played = None
         PLAYER_LIST.append(self)
-    def won(self, win):
-        self.last_played = datetime.now()
-        self.times_played += 1
-        if win is True: 
-            self.wins += 1
-        return 0
-    def edit_name(self, name):
-        self.name = name
-        return 0
+
 #section for testing
 if __name__ == "__main__":
     Player("Nico")
