@@ -21,6 +21,11 @@ h1.first{
 	border:thin;
 	border-radius: 8px;
 }
+.statstable{
+	border: solid;
+	text-align: center;
+	width: 100%;
+}	
 form.boxxed{
 	border-style: dashed;
 	border-radius: 20px;

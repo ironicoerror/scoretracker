@@ -57,7 +57,10 @@ def submit():
 def stats():
     """on GET: loads data from database and gets the connections between players, games and matchups
     on POST: ..."""
-    return render_template("stats.html")
+    players = mdb.read_table("people")
+    games = mdb.read_table("games")
+    matchups = mdb.read_table("people") 
+    return render_template("stats.html", players=players, games=games, matchups=matchups)
 
 def create_game(game_name):
     """creates a game in the games table with the stats from olib"""
@@ -106,9 +109,9 @@ def create_matchup(form_data):
 #test section
 if __name__ == "__main__":
     usage_desc = """
-    Usage: {0} <license_file>
+    Usage: {0} <license_file> <database_name>
     Note: Please give the complete link to the license file /home/...
-    """
+    """.format(argv[0])
     if len(argv) == 3:
         mdb.LICENSE_STRING = mdb.set_credentials(argv[1])
         mdb.CLIENT, mdb.DB = mdb.db_init(argv[2])

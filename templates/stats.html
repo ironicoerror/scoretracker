@@ -19,7 +19,12 @@
 	</head>
 	<body>
 		<header>
-			<h1 class="first">scoretracker</h1>
+			<table width="100%">
+				<th align=left style="width:20%"><form action="/home"><button class="back" type="submit">&#8592;</button></form>
+				<th style="width:60%"><h1 class="first">scoretracker</h1></th>
+				<th style="width:20%"></th>
+			</table>
+		</header>
 			<div class="flashes">
 			{% with messages = get_flashed_messages(with_categories=true) %}
 				{% if messages %}
@@ -29,17 +34,19 @@
 				{% endif %}
 			{% endwith %}
 			</div>
-		</header>
 		<center>
-		<form class="boxxed" method="get">
-			<button class="statistics" type="submit" formaction="/stats">View Statistics</button>
-			<button class="game" type="submit" formaction="/submit">Submit Match</button>
-		</form>
+		<p>Hello World!</p>
+		<table class="statstable" border=solid>
+			<tr><th>Player</th><th>Last played</th><th>Wins</th><th>Winrate</th><th>Times played</th></tr>
+			{% for player in players %}
+			<tr><td>{{ player.name }}</td><td>{{ player.last_played }}</td><td>{{ player.wins }}</td><td>calculated Value</td><td>{{ player.times_played }}</td></tr>
+			{% endfor %}
+		</table>
 		</center>
 	</body>
 	<footer>
-	    <address>
-				Link zum Projekt und Source Code: <a href="https://github.com/ironicoerror/scoretracker/">Github</a>
-	    </address>
+		<address>
+			Link zum Projekt und Source Code: <a href="https://github.com/ironicoerror/scoretracker/">Github</a>
+		</address>
 	</footer>
 </html>
