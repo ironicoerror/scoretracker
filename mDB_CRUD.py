@@ -3,7 +3,6 @@
 
 from sys import stdout, stderr, argv
 import pymongo
-from credentials_import import ImportFromFile
 from datetime import datetime
 from random import randint, choice, choices
 from os import path

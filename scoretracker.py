@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-from sys import argv
+from sys import argv, stderr
 from datetime import datetime
 from flask import Flask, render_template, request, redirect, url_for, flash
 import objectlib as olib
@@ -12,11 +12,11 @@ app.secret_key = b';\xf5!\xa7\xfa\xba\x9b\x94P\x15\n.V\xb9\x0c\xe7'
 @app.route("/home")
 def home():
     """checks if the mongoDB is reachable from current device and loads the home.html template"""
-    online = not mdb.get_serverstatus()
-    if online:
+    try:
+        mdb.get_serverstatus()
         flash("Server online.", "info")
-    else:
-        flash("Trouble reaching Database", "error")
+    except:
+        flash("Trouble reaching Database.", "error")
     return render_template("home.html")
 
 @app.route("/submit", methods=["POST", "GET"])
@@ -31,19 +31,12 @@ def submit():
         if not request.is_json: #form data
             try:
                 update_gamedata(request.form["sgame"])
-                if int(request.form["score_team1"]) > int(request.form["score_team2"]):
-                    t1_won, t2_won = True, False
-                elif int(request.form["score_team1"]) < int(request.form["score_team2"]):
-                    t1_won, t2_won = False, True
-                else: t1_won, t2_won = False, False  
-                for player in request.form.getlist("team1"):
-                    update_playerdata(player, t1_won)
-                for player in request.form.getlist("team2"):
-                    update_playerdata(player, t2_won)
+                update_playerdata(request.form)
                 create_matchup(request.form)
                 flash("Success.", "info")
             except Exception as e:
-                flash("Trouble reaching database.\n{0}".format(e), "error")
+                flash("Trouble reaching database.", "error")
+                stderr.write(e)
             finally:
                 return redirect(url_for("submit"))
         if request.is_json: #from scipt.js
@@ -83,16 +76,26 @@ def update_gamedata(game_id):
     response = mdb.update_data(game_data, "games")
     return 0
 
-def update_playerdata(player_id, won):
+def update_playerdata(form_data):
     """sets the playerdata and updates it in the database"""
-    player_data = mdb.read_item("people", player_id)
-    player_data["times_played"] += 1
-    player_data["last_played"] = datetime.now()
-    if won:
-        player_data["wins"] += 1
-    if not won:
-        player_data["losses"] += 1
-    response = mdb.update_data(player_data, "people")
+    for player in form_data.getlist("team1"):
+        player_data = mdb.read_item("people", player)
+        player_data["times_played"] += 1
+        player_data["last_played"] = datetime.now()
+        if int(form_data["score_team1"]) > int(form_data["score_team2"]):
+            player_data["wins"] += 1
+        elif int(form_data["score_team1"]) < int(form_data["score_team2"]):
+            player_data["losses"] += 1
+        mdb.update_data(player_data, "people")
+    for player in form_data.getlist("team2"):
+        player_data = mdb.read_item("people", player)
+        player_data["times_played"] += 1
+        player_data["last_played"] = datetime.now()
+        if int(form_data["score_team1"]) < int(form_data["score_team2"]):
+            player_data["wins"] += 1
+        elif int(form_data["score_team1"]) > int(form_data["score_team2"]):
+            player_data["losses"] += 1
+        mdb.update_data(player_data, "people")
     return 0
 def create_matchup(form_data):
     """creates a matchup from the formdata and uploads it to the matchups table"""
@@ -106,15 +109,15 @@ def create_matchup(form_data):
             }
     mdb.create_data(new_matchup, "matchups") 
     return 0
-#test section
+
 if __name__ == "__main__":
     usage_desc = """
     Usage: {0} <license_file> <database_name>
     Note: Please give the complete link to the license file /home/...
     """.format(argv[0])
     if len(argv) == 3:
-        mdb.LICENSE_STRING = mdb.set_credentials(argv[1])
-        mdb.CLIENT, mdb.DB = mdb.db_init(argv[2])
+        mdb.LICENSE_STRING = mdb.get_credentials(argv[1])
+        mdb.CLIENT = mdb.connect_client()
+        mdb.DB = mdb.set_db(argv[2])
         app.run(debug=True, host="0.0.0.0")
     else: print(usage_desc)
-    print("\n\n------------Success-------------")
