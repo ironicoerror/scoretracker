@@ -14,9 +14,11 @@ LICENSE_STRING = None
 CLIENT = None
 DB = None
 
-def set_credentials(license_file):
+def get_credentials(license_file):
     """copies credential string from file given"""
-    return ImportFromFile(license_file).import_direct()
+    with open(license_file, "r") as fh:
+        cred_string = fh.read().rstrip()
+    return cred_string
 
 def connect_client():
     """sets up a client conncetion to the database"""
@@ -70,7 +72,7 @@ if __name__ == "__main__":
     """.format(argv[0])
     commands = ["list", "status"]
     if (len(argv) > 2) and (argv[2] in commands):
-        LICENSE_STRING = ImportFromFile(argv[1]).import_direct()
+        LICENSE_STRING = get_credentials(argv[1])
         CLIENT = connect_client()
         #list
         if argv[2] == "list":
