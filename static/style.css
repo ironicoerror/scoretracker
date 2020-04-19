@@ -21,8 +21,11 @@ h1.first{
 	border:thin;
 	border-radius: 8px;
 }
-.statstable{
-	border: solid;
+.table-header{
+	cursor: pointer;
+}
+.game-table{
+	border: thin;
 	text-align: center;
 	width: 100%;
 }	
