@@ -15,6 +15,7 @@ DB = None
 
 def get_credentials(license_file):
     """copies credential string from file given"""
+    print(license_file)
     with open(license_file, "r") as fh:
         cred_string = fh.read().rstrip()
     return cred_string
@@ -22,7 +23,7 @@ def get_credentials(license_file):
 def connect_client():
     """sets up a client conncetion to the database"""
     if LICENSE_STRING == None:
-        raise Exception("No License information given. Edit LICENSE_STRING.")
+        stderr.write("No License information given. Edit LICENSE_STRING.")
     else:
         return pymongo.MongoClient(LICENSE_STRING)
 
@@ -32,12 +33,12 @@ def set_db(db_name):
 
 def get_serverstatus():
     """returns the Server Status of the mongo DB Client"""
-    return DB.command("serverstatus")
+    return DB.command("ismaster")
 
 def create_data(upload_object, collection):
     """writes one dictionary object to the collection specified"""
     if type(upload_object) != dict:
-        raise TypeError("Data has to be dict type.")
+        stderr.write("Data has to be dict type.")
     else:
         return DB[collection].insert_one(upload_object)
 
@@ -62,30 +63,33 @@ def delete_data(del_object, collection):
     """searches for an entryid and deletes the entry"""
     return DB[collection].delete_one({"_id": del_object["_id"]})
 
-if __name__ == "__main__":
+def main(argumentlist):
+    print(argumentlist)
     usage_desc = """Usage:
     {0} <lic_file> <list> to list the databases on the server.
     {0} <lic_file> <list> <db_name> to list the tables.
     {0} <lic_file> <list> <db_name> <table> to list a tables content.
     {0} <lic_file> <status> <db_name> to print the database status.
-    """.format(argv[0])
+    """.format(argumentlist[0])
     commands = ["list", "status"]
-    if (len(argv) > 2) and (argv[2] in commands):
-        LICENSE_STRING = get_credentials(argv[1])
+    if (len(argumentlist) > 2) and (argumentlist[2] in commands):
+        LICENSE_STRING = get_credentials(argumentlist[1])
         CLIENT = connect_client()
         #list
-        if argv[2] == "list":
-            if len(argv) == 3:
+        if argumentlist[2] == "list":
+            if len(argumentlist) == 3:
                 print([database["name"] for database in CLIENT.list_databases()])
-            elif len(argv) == 4:
-                DB = set_db(argv[3])
+            elif len(argumentlist) == 4:
+                DB = set_db(argumentlist[3])
                 print([table["name"] for table in DB.list_collections()])
-            elif len(argv) == 5:
-                DB = set_db(argv[3])
-                print([doc for doc in read_table(argv[4])])
+            elif len(argumentlist) == 5:
+                DB = set_db(argumentlist[3])
+                print([doc for doc in read_table(argumentlist[4])])
         #status
-        if argv[2] == "status":
-            DB = set_db(argv[3])
+        if argumentlist[2] == "status":
+            DB = set_db(argumentlist[3])
             print("Connected") if not get_serverstatus() else print("No connection")
     else:
         print(usage_desc) 
+if __name__ == "__main__":
+    main(argv)
