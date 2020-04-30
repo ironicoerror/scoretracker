@@ -48,12 +48,12 @@ def read_table(collection):
 
 def read_item(collection, unique_id):
     """reads an item in the collection from its ID and returns it as a dict"""
-    return DB[collection].find_one({"_id" : ObjectId(unique_id)})
+    return DB[collection].find_One({"_id" : ObjectId(unique_id)})
 
 def read_matchup(collection, field, searchstring):
     """reads all items in the collection that match a certain string and returns it as a dict"""
     if field == "_id": searchstring = ObjectId(searchstring)
-    return DB[collection].find_one({field : searchstring})
+    return DB[collection].find_One({field : searchstring})
 
 def update_data(update_object, collection):
     """searches for an entryid in the specified collection and updates it"""
