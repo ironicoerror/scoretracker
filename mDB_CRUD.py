@@ -59,6 +59,7 @@ def update_data(update_object, collection):
     """searches for an entryid in the specified collection and updates it"""
     stripped_object = update_object
     del stripped_object["_id"]
+    print(stripped_object)
     return DB[collection].update({"_id": update_object["_id"]}, {"$set": stripped_object})
 
 def delete_data(del_object, collection):
