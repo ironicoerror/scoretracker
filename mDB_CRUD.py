@@ -48,19 +48,17 @@ def read_table(collection):
 
 def read_item(collection, unique_id):
     """reads an item in the collection from its ID and returns it as a dict"""
-    return DB[collection].find_One({"_id" : ObjectId(unique_id)})
+    return DB[collection].find_one({"_id" : ObjectId(unique_id)})
 
 def read_matchup(collection, field, searchstring):
     """reads all items in the collection that match a certain string and returns it as a dict"""
     if field == "_id": searchstring = ObjectId(searchstring)
-    return DB[collection].find_One({field : searchstring})
+    return DB[collection].find_one({field : searchstring})
 
 def update_data(update_object, collection):
     """searches for an entryid in the specified collection and updates it"""
-    stripped_object = update_object
-    del stripped_object["_id"]
-    print(stripped_object)
-    return DB[collection].update({"_id": update_object["_id"]}, {"$set": stripped_object})
+    object_id = update_object.pop("_id")
+    return DB[collection].update({"_id": object_id}, {"$set": update_object})
 
 def delete_data(del_object, collection):
     """searches for an entryid and deletes the entry"""

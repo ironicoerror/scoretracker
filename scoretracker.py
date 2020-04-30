@@ -33,13 +33,14 @@ def submit():
             update_playerdata(request.form)
             create_matchup(request.form)
             flash("Success.", "info")
-            return redirect(url_for("submit"))
         if request.is_json: #from scipt.js
             if request.headers.get("Js-Function", type=str) == "addGame":
                 create_game(request.get_json()["game_name"])
+                flash("Game created.", "info")
             elif request.headers.get("Js-Function", type=str) == "addPlayer":
                 create_player(request.get_json()["player_name"])
-            return redirect(url_for("submit"))
+                flash("Player created.", "info")
+        return redirect(url_for("submit"))
 
 @app.route("/stats")
 def stats():
