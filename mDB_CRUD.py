@@ -57,7 +57,9 @@ def read_matchup(collection, field, searchstring):
 
 def update_data(update_object, collection):
     """searches for an entryid in the specified collection and updates it"""
-    return DB[collection].update({"_id": update_object["_id"]}, {"$set": update_object})
+    stripped_object = update_object
+    del stripped_object["_id"]
+    return DB[collection].update({"_id": update_object["_id"]}, {"$set": stripped_object})
 
 def delete_data(del_object, collection):
     """searches for an entryid and deletes the entry"""
