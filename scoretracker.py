@@ -29,16 +29,11 @@ def submit():
         return render_template("submit_game.html", players=players, games=games)
     if request.method == "POST":
         if not request.is_json: #form data
-            try:
-                update_gamedata(request.form["sgame"])
-                update_playerdata(request.form)
-                create_matchup(request.form)
-                flash("Success.", "info")
-            except Exception as e:
-                flash("Trouble reaching database.", "error")
-                stderr.write(e)
-            finally:
-                return redirect(url_for("submit"))
+            update_gamedata(request.form["sgame"])
+            update_playerdata(request.form)
+            create_matchup(request.form)
+            flash("Success.", "info")
+            return redirect(url_for("submit"))
         if request.is_json: #from scipt.js
             if request.headers.get("Js-Function", type=str) == "addGame":
                 create_game(request.get_json()["game_name"])
