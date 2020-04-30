@@ -64,16 +64,13 @@ def create_player(player_name):
     """creates a player in the player table with the stats from olib"""
     mdb.create_data(olib.Player(player_name).__dict__, "people")
     return 0
-def create_player(player_name):
-    """creates a player in the player table with the stats from olib"""
-    mdb.create_data(olib.Player(player_name).__dict__, "people")
-    return 0
+
 def update_gamedata(game_id):
     """sets the gamedata and updates it in the game table"""
     game_data = mdb.read_item("games", game_id)
     game_data["times_played"] += 1
     game_data["last_played"] = datetime.now()
-    response = mdb.update_data(game_data, "games")
+    mdb.update_data(game_data, "games")
     return 0
 
 def update_playerdata(form_data):
@@ -112,11 +109,14 @@ def create_matchup(form_data):
 
 if __name__ == "__main__":
     usage_desc = """
-    Usage: {0} <license_file> <database_name>
+    Usage: {0} <local or license_file> <database_name>
     Note: Please give the complete link to the license file /home/...
     """.format(argv[0])
     if len(argv) == 3:
-        mdb.LICENSE_STRING = mdb.get_credentials(argv[1])
+        if argv[1] == "local":
+            mdb.LICENSE_STRING = "host=localhost, port=27017"
+        else:
+            mdb.LICENSE_STRING = mdb.get_credentials(argv[1])
         mdb.CLIENT = mdb.connect_client()
         mdb.DB = mdb.set_db(argv[2])
         app.run(debug=True, host="0.0.0.0")

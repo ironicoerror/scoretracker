@@ -53,7 +53,7 @@ def read_item(collection, unique_id):
 def read_matchup(collection, field, searchstring):
     """reads all items in the collection that match a certain string and returns it as a dict"""
     if field == "_id": searchstring = ObjectId(searchstring)
-    return DB[collection].find_one({field : ObjectId(unique_id)})
+    return DB[collection].find_one({field : searchstring})
 
 def update_data(update_object, collection):
     """searches for an entryid in the specified collection and updates it"""
@@ -64,16 +64,20 @@ def delete_data(del_object, collection):
     return DB[collection].delete_one({"_id": del_object["_id"]})
 
 def main(argumentlist):
-    print(argumentlist)
+    """mongo adaptation to python using pymongo like the mongo shell. found out about it a little to late"""
+    global LICENSE_STRING, CLIENT, DB
     usage_desc = """Usage:
     {0} <lic_file> <list> to list the databases on the server.
     {0} <lic_file> <list> <db_name> to list the tables.
     {0} <lic_file> <list> <db_name> <table> to list a tables content.
     {0} <lic_file> <status> <db_name> to print the database status.
     """.format(argumentlist[0])
-    commands = ["list", "status"]
+    commands = ["local", "list", "status"]
     if (len(argumentlist) > 2) and (argumentlist[2] in commands):
-        LICENSE_STRING = get_credentials(argumentlist[1])
+        if argumentlist[1] == "local":
+            LICENSE_STRING = "host=localhost, port=27017"
+        else:
+            LICENSE_STRING = get_credentials(argumentlist[1])
         CLIENT = connect_client()
         #list
         if argumentlist[2] == "list":
