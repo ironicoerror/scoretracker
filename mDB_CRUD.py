@@ -1,5 +1,5 @@
 #!/usr/bin/python3
-"""connect to a mongoDB created by Mongo Atlas Free"""
+"""connect to a local mongoDB using pymongo 3.4.0 cause raspi only 32-bit"""
 
 from sys import stdout, stderr, argv
 import pymongo
@@ -40,7 +40,7 @@ def create_data(upload_object, collection):
     if type(upload_object) != dict:
         stderr.write("Data has to be dict type.")
     else:
-        return DB[collection].insert_one(upload_object)
+        return DB[collection].insert(upload_object)
 
 def read_table(collection):
     """reads the whole collection table specified"""
@@ -57,25 +57,25 @@ def read_matchup(collection, field, searchstring):
 
 def update_data(update_object, collection):
     """searches for an entryid in the specified collection and updates it"""
-    return DB[collection].update_one({"_id": update_object["_id"]}, {"$set": update_object})
+    return DB[collection].update({"_id": update_object["_id"]}, {"$set": update_object})
 
 def delete_data(del_object, collection):
     """searches for an entryid and deletes the entry"""
-    return DB[collection].delete_one({"_id": del_object["_id"]})
+    return DB[collection].remove({"_id": del_object["_id"]})
 
 def main(argumentlist):
     """mongo adaptation to python using pymongo like the mongo shell. found out about it a little to late"""
     global LICENSE_STRING, CLIENT, DB
     usage_desc = """Usage:
-    {0} <lic_file> <list> to list the databases on the server.
-    {0} <lic_file> <list> <db_name> to list the tables.
-    {0} <lic_file> <list> <db_name> <table> to list a tables content.
-    {0} <lic_file> <status> <db_name> to print the database status.
+    {0} <lic_file/local> <list> to list the databases on the server.
+    {0} <lic_file/local> <list> <db_name> to list the tables.
+    {0} <lic_file/local> <list> <db_name> <table> to list a tables content.
+    {0} <lic_file/local> <status> <db_name> to print the database status.
     """.format(argumentlist[0])
     commands = ["local", "list", "status"]
     if (len(argumentlist) > 2) and (argumentlist[2] in commands):
         if argumentlist[1] == "local":
-            LICENSE_STRING = "host=localhost, port=27017"
+            LICENSE_STRING = "localhost"
         else:
             LICENSE_STRING = get_credentials(argumentlist[1])
         CLIENT = connect_client()

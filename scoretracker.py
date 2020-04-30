@@ -114,7 +114,7 @@ if __name__ == "__main__":
     """.format(argv[0])
     if len(argv) == 3:
         if argv[1] == "local":
-            mdb.LICENSE_STRING = "host=localhost, port=27017"
+            mdb.LICENSE_STRING = "localhost"
         else:
             mdb.LICENSE_STRING = mdb.get_credentials(argv[1])
         mdb.CLIENT = mdb.connect_client()
