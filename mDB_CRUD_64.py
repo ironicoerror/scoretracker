@@ -1,6 +1,12 @@
 #!/usr/bin/python3
-"""connect to a local mongoDB using pymongo 3.4.0 cause raspi only 32-bit"""
+"""connect to a local mongoDB using pymongo 3.4.0 cause raspi only supports the 32-bit version
 
+functions that changed:
+find_one - find_one
+insert_one - insert
+update_one - update
+remove_one - remove
+"""
 from sys import stdout, stderr, argv
 import pymongo
 from datetime import datetime
@@ -23,7 +29,7 @@ def get_credentials(license_file):
 def connect_client():
     """sets up a client conncetion to the database"""
     if LICENSE_STRING == None:
-        stderr.write("No License information given. Edit LICENSE_STRING.")
+        stderr.write("Conncetion refused.\nNo License information given.Try to edit LICENSE_STRING.")
     else:
         return pymongo.MongoClient(LICENSE_STRING)
 
@@ -40,7 +46,7 @@ def create_data(upload_object, collection):
     if type(upload_object) != dict:
         stderr.write("Data has to be dict type.")
     else:
-        return DB[collection].insert(upload_object)
+        return DB[collection].insert_one(upload_object)
 
 def read_table(collection):
     """reads the whole collection table specified"""
@@ -57,12 +63,12 @@ def read_matchup(collection, field, searchstring):
 
 def update_data(update_object, collection):
     """searches for an entryid in the specified collection and updates it"""
-    object_id = update_object.pop("_id")
-    return DB[collection].update({"_id": object_id}, {"$set": update_object})
+    object_id = update_object.pop("_id") # 32-bit version of mongodb doesn't allow manipulation of the _id tag 
+    return DB[collection].update_one({"_id": object_id}, {"$set": update_object})
 
 def delete_data(del_object, collection):
     """searches for an entryid and deletes the entry"""
-    return DB[collection].remove({"_id": del_object["_id"]})
+    return DB[collection].delete_one({"_id": del_object["_id"]})
 
 def main(argumentlist):
     """mongo adaptation to python using pymongo like the mongo shell. found out about it a little to late"""

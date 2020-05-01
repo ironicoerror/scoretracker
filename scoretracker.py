@@ -3,7 +3,10 @@ from sys import argv, stderr
 from datetime import datetime
 from flask import Flask, render_template, request, redirect, url_for, flash
 import objectlib as olib
-import mDB_CRUD as mdb
+if argv[1] == "local":
+    import mDB_CRUD_32 as mdb
+else:
+    import mDB_CRUD_64 as mdb
 
 app = Flask(__name__, static_url_path="/static")
 app.secret_key = b';\xf5!\xa7\xfa\xba\x9b\x94P\x15\n.V\xb9\x0c\xe7'
