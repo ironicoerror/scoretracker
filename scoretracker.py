@@ -1,5 +1,6 @@
 #!/usr/bin/python3
 from sys import argv, stderr
+import os
 from datetime import datetime
 from flask import Flask, render_template, request, redirect, url_for, flash
 import objectlib as olib
@@ -20,11 +21,15 @@ def root():
 def putzplan():
 	pplist = pp.main(datetime.now().date().isocalendar(), 4)
 	if request.method == "GET":
-		with open("checkarray.txt", "r") as lastchange:
+		if not os.path.exists('/tmp/checkarray.txt'):
+			with open("/tmp/checkarray.txt", "w"): pass
+		with open("/tmp/checkarray.txt", "r") as lastchange:
 			checkarray = [lol.rstrip() for lol in lastchange.readlines()]
 		return render_template("putzplan.html", mbwlist=pp.MITBEWOHNER, plans=pplist, checkarray=checkarray)
 	if request.method == "POST":
-		with open("checkarray.txt", "w") as lastchange:
+		if not os.path.exists('/tmp/checkarray.txt'):
+			with open("/tmp/checkarray.txt", "w"): pass
+		with open("/tmp/checkarray.txt", "w") as lastchange:
 			for checkbox in request.form:
 				lastchange.write(checkbox + "\n")
 		return redirect(url_for("putzplan"))
