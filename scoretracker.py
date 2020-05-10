@@ -3,6 +3,8 @@ from sys import argv, stderr
 from datetime import datetime
 from flask import Flask, render_template, request, redirect, url_for, flash
 import objectlib as olib
+import putzplan as pp
+
 if argv[1] == "local":
     import mDB_CRUD_32 as mdb
 else:
@@ -12,24 +14,38 @@ app = Flask(__name__, static_url_path="/static")
 app.secret_key = b';\xf5!\xa7\xfa\xba\x9b\x94P\x15\n.V\xb9\x0c\xe7'
 
 @app.route("/")
-@app.route("/home")
-def home():
+def root():
+	return render_template("root.html")
+@app.route("/putzplan", methods=["POST", "GET"])
+def putzplan():
+	pplist = pp.main(datetime.now().date().isocalendar(), 4)
+	if request.method == "GET":
+		with open("checkarray.txt", "r") as lastchange:
+			checkarray = [lol.rstrip() for lol in lastchange.readlines()]
+		return render_template("putzplan.html", mbwlist=pp.MITBEWOHNER, plans=pplist, checkarray=checkarray)
+	if request.method == "POST":
+		with open("checkarray.txt", "w") as lastchange:
+			for checkbox in request.form:
+				lastchange.write(checkbox + "\n")
+		return redirect(url_for("putzplan"))
+@app.route("/scoretracker")
+def scoretracker():
     """checks if the mongoDB is reachable from current device and loads the home.html template"""
     try:
         mdb.get_serverstatus()
         flash("Server online.", "info")
     except:
         flash("Trouble reaching Database.", "error")
-    return render_template("home.html")
+    return render_template("scoretracker.html")
 
-@app.route("/submit", methods=["POST", "GET"])
-def submit():
+@app.route("/scoretracker/submit", methods=["POST", "GET"])
+def st_submit():
     """on GET: loads player and game table and fills the dropdown lists
     on POST: handles the three posible post methods from the form or addplayer/addgame"""
     if request.method == "GET":
         players = list(mdb.read_table("people"))
         games = mdb.read_table("games")
-        return render_template("submit_game.html", players=players, games=games)
+        return render_template("st_submit_game.html", players=players, games=games)
     if request.method == "POST":
         if not request.is_json: #form data
             update_gamedata(request.form["sgame"])
@@ -43,16 +59,16 @@ def submit():
             elif request.headers.get("Js-Function", type=str) == "addPlayer":
                 create_player(request.get_json()["player_name"])
                 flash("Player created.", "info")
-        return redirect(url_for("submit"))
+        return redirect(url_for("st_submit"))
 
-@app.route("/stats")
-def stats():
+@app.route("/scoretracker/stats")
+def st_stats():
     """on GET: loads data from database and gets the connections between players, games and matchups
     on POST: ..."""
     players = mdb.read_table("people")
     games = mdb.read_table("games")
     matchups = mdb.read_table("people") 
-    return render_template("stats.html", players=players, games=games, matchups=matchups)
+    return render_template("st_stats.html", players=players, games=games, matchups=matchups)
 
 def create_game(game_name):
     """creates a game in the games table with the stats from olib"""

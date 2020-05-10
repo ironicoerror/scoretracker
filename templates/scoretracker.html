@@ -19,7 +19,6 @@
 	</head>
 	<body>
 		<header>
-			<h1 class="first">scoretracker</h1>
 			<div class="flashes">
 			{% with messages = get_flashed_messages(with_categories=true) %}
 				{% if messages %}
@@ -29,11 +28,16 @@
 				{% endif %}
 			{% endwith %}
 			</div>
+			<table width="100%">
+				<th align=left style="width:20%"><form action="/"><button class="back" type="submit">&#8592;</button></form>
+				<th style="width:60%"><h1 class="first">scoretracker</h1></th>
+				<th style="width:20%"></th>
+			</table>
 		</header>
 		<center>
 		<form class="boxxed" method="get">
-			<button class="statistics" type="submit" formaction="/stats">View Statistics</button>
-			<button class="game" type="submit" formaction="/submit">Submit Match</button>
+			<button class="statistics" type="submit" formaction="/scoretracker/stats">View Statistics</button>
+			<button class="game" type="submit" formaction="/scoretracker/submit">Submit Match</button>
 		</form>
 		</center>
 	</body>

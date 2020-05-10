@@ -1,0 +1,65 @@
+<!doctype html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<meta http-equiv="x-ua-compatible" content="ie=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>HeScha-Scoretracker</title>
+		<link rel="canonical" href="" />
+		<meta name="description" content="Tracking scores of various games to mongoDB">
+		<meta name="keywords" content="gaming, score, tracker, python, flask" />
+		<meta property="og:admins" content="tobi rogx" />
+		<meta property="og:title" content="HeScha-Scoretracker" />
+		<meta property="og:type" content="website" />
+		<meta property="og:url" content="localhost" />
+		<meta property="og:image" content="" />
+		<meta property="og:description" content="Tracking scores of various games to mongoDB" />
+		<link rel="stylesheet" href="../static/style.css">
+		<script type="text/javascript" src="../static/script.js"></script>
+	</head>
+	<body>
+		<header>
+			{% with messages = get_flashed_messages(with_categories=true) %}
+				{% if messages %}
+					<ul class=flashes>
+					{% for category, message in messages %}
+						<li class="{{ category }}">{{ message }}</li>
+					{% endfor %}
+					</ul>
+				{% endif %}
+			{% endwith %}
+			<table width="100%">
+				<th align=left style="width:20%"><form action="/"><button class="back" type="submit">&#8592;</button></form>
+				<th style="width:60%"><h1 class="first">Putzplan</h1></th>
+				<th style="width:20%"></th>
+			</table>
+		</header>
+		<center>
+		<table class="game-table" border=thick>
+		<thead>
+			<tr>
+				<th>CW</th>
+				{% for mbw in mbwlist %}
+				<th>{{ mbw }}</th>
+				{% endfor %}
+			</tr>	
+		</thead>
+		<form name="checkbox_array" method="post">
+		{% for cw, weekplan in plans %}
+		<tbody>
+			<tr>
+				<td>{{ cw }}</td>
+				{% for task in weekplan %}
+				<td>{{ task }}<br>
+				<input type="checkbox" name="{{ cw + task }}" id="{{ cw + task }}" {% if cw + task in checkarray %} checked {% endif %}></td>
+				{% endfor %}
+			</tr>
+		</tbody>
+		{% endfor %}
+		</table>
+		<button class="game" type="submit" value="Submit">Save changes</button>
+		</form>
+		</center>
+	</body>
+</html>
+
