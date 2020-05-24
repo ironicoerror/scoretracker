@@ -27,15 +27,16 @@ def putzplan():
     lufile = path.expanduser("~/checkboxes.txt")
     pplist = pp.main(datetime.now().date().isocalendar(), 4)
     if not path.exists(lufile):
-            with open(lufile, "w"): pass
-    with open(lufile, "r") as lastchange:
-        if request.method == "GET":
+        with open(lufile, "w"): pass
+    if request.method == "GET":
+        with open(lufile, "r") as lastchange:
             checkarray = [lol.rstrip() for lol in lastchange.readlines()]
-            return render_template("putzplan.html", mbwlist=pp.MITBEWOHNER, plans=pplist, checkarray=checkarray)
-        if request.method == "POST":
+        return render_template("putzplan.html", mbwlist=pp.MITBEWOHNER, plans=pplist, checkarray=checkarray)
+    if request.method == "POST":
+        with open(lufile, "w") as lastchange:
             for checkbox in request.form:
                 lastchange.write(checkbox + "\n")
-            return redirect(url_for("putzplan"))
+        return redirect(url_for("putzplan"))
 
 @app.route("/scoretracker")
 def scoretracker():
