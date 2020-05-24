@@ -34,6 +34,10 @@ form.boxxed{
 	border-radius: 20px;
 	text-align: center; 
 }
+input.chklarge{
+    width: 40px; 
+    height: 40px; 
+}
 input.score{
 	background-color: lightgrey;
 	width: 40px;

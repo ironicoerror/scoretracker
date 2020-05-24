@@ -1,41 +1,46 @@
-#!/usr/bin/python3
+#!/usr/bin/env python3
+"""Server app, containing the routes to the Putzplan and Scoretracker
+with a given mongoDB login or local mongoDB you can setup a server
+that is tracking players, games and matchups for statistics"""
+
+from os import path
 from sys import argv, stderr
-import os
 from datetime import datetime
 from flask import Flask, render_template, request, redirect, url_for, flash
 import objectlib as olib
 import putzplan as pp
 
-if argv[1] == "local":
-    import mDB_CRUD_32 as mdb
-else:
-    import mDB_CRUD_64 as mdb
-
+# flask initialization 
 app = Flask(__name__, static_url_path="/static")
 app.secret_key = b';\xf5!\xa7\xfa\xba\x9b\x94P\x15\n.V\xb9\x0c\xe7'
 
 @app.route("/")
 def root():
-	return render_template("root.html")
+    """load the root homepage"""
+    return render_template("root.html")
+
 @app.route("/putzplan", methods=["POST", "GET"])
 def putzplan():
-	pplist = pp.main(datetime.now().date().isocalendar(), 4)
-	if request.method == "GET":
-		if not os.path.exists('/tmp/checkarray.txt'):
-			with open("/tmp/checkarray.txt", "w"): pass
-		with open("/tmp/checkarray.txt", "r") as lastchange:
-			checkarray = [lol.rstrip() for lol in lastchange.readlines()]
-		return render_template("putzplan.html", mbwlist=pp.MITBEWOHNER, plans=pplist, checkarray=checkarray)
-	if request.method == "POST":
-		if not os.path.exists('/tmp/checkarray.txt'):
-			with open("/tmp/checkarray.txt", "w"): pass
-		with open("/tmp/checkarray.txt", "w") as lastchange:
-			for checkbox in request.form:
-				lastchange.write(checkbox + "\n")
-		return redirect(url_for("putzplan"))
+    """create putzplan list over last 4 weeks open/create lookupfile
+    on GET: read the lookupfile for the checked boxes
+    on POST: writes the current checked boxes"""
+    lufile = path.expanduser("~/checkboxes.txt")
+    pplist = pp.main(datetime.now().date().isocalendar(), 4)
+    if not path.exists(lufile):
+            with open(lufile, "w"): pass
+    with open(lufile, "r") as lastchange:
+        if request.method == "GET":
+            checkarray = [lol.rstrip() for lol in lastchange.readlines()]
+            return render_template("putzplan.html", mbwlist=pp.MITBEWOHNER, plans=pplist, checkarray=checkarray)
+        if request.method == "POST":
+            for checkbox in request.form:
+                lastchange.write(checkbox + "\n")
+            return redirect(url_for("putzplan"))
+
 @app.route("/scoretracker")
 def scoretracker():
-    """checks if the mongoDB is reachable from current device and loads the home.html template"""
+    """check if the mongoDB is reachable from current device
+    and load the home.html template"""
     try:
         mdb.get_serverstatus()
         flash("Server online.", "info")
@@ -45,8 +50,8 @@ def scoretracker():
 
 @app.route("/scoretracker/submit", methods=["POST", "GET"])
 def st_submit():
-    """on GET: loads player and game table and fills the dropdown lists
-    on POST: handles the three posible post methods from the form or addplayer/addgame"""
+    """on GET: load player and game table and fill the dropdown lists
+    on POST: handle the three possible post methods"""
     if request.method == "GET":
         players = list(mdb.read_table("people"))
         games = mdb.read_table("games")
@@ -68,25 +73,25 @@ def st_submit():
 
 @app.route("/scoretracker/stats")
 def st_stats():
-    """on GET: loads data from database and gets the connections between players, games and matchups
+    """on GET: load data from database and render template
     on POST: ..."""
     players = mdb.read_table("people")
     games = mdb.read_table("games")
-    matchups = mdb.read_table("people") 
+    matchups = mdb.read_table("people")
     return render_template("st_stats.html", players=players, games=games, matchups=matchups)
 
 def create_game(game_name):
-    """creates a game in the games table with the stats from olib"""
+    """create a game in the games table with the dict from olib"""
     mdb.create_data(olib.Game(game_name).__dict__, "games")
     return 0
 
 def create_player(player_name):
-    """creates a player in the player table with the stats from olib"""
+    """create a player in the player table with the dict from olib"""
     mdb.create_data(olib.Player(player_name).__dict__, "people")
     return 0
 
 def update_gamedata(game_id):
-    """sets the gamedata and updates it in the game table"""
+    """set the gamedata and update it in the game table"""
     game_data = mdb.read_item("games", game_id)
     game_data["times_played"] += 1
     game_data["last_played"] = datetime.now()
@@ -94,7 +99,7 @@ def update_gamedata(game_id):
     return 0
 
 def update_playerdata(form_data):
-    """sets the playerdata and updates it in the database"""
+    """set the playerdata and update it in the database"""
     for player in form_data.getlist("team1"):
         player_data = mdb.read_item("people", player)
         player_data["times_played"] += 1
@@ -114,8 +119,9 @@ def update_playerdata(form_data):
             player_data["losses"] += 1
         mdb.update_data(player_data, "people")
     return 0
+
 def create_matchup(form_data):
-    """creates a matchup from the formdata and uploads it to the matchups table"""
+    """create a matchup from the formdata and upload it to the matchups table"""
     new_matchup = {
             "creation_date": datetime.now(),
             "game_played": form_data["sgame"],
@@ -124,7 +130,7 @@ def create_matchup(form_data):
             "score_team1": int(form_data["score_team1"]),
             "score_team2": int(form_data["score_team2"])
             }
-    mdb.create_data(new_matchup, "matchups") 
+    mdb.create_data(new_matchup, "matchups")
     return 0
 
 if __name__ == "__main__":
@@ -134,8 +140,10 @@ if __name__ == "__main__":
     """.format(argv[0])
     if len(argv) == 3:
         if argv[1] == "local":
+            import mDB_CRUD_32 as mdb
             mdb.LICENSE_STRING = "localhost"
         else:
+            import mDB_CRUD_64 as mdb
             mdb.LICENSE_STRING = mdb.get_credentials(argv[1])
         mdb.CLIENT = mdb.connect_client()
         mdb.DB = mdb.set_db(argv[2])

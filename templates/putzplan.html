@@ -51,7 +51,7 @@
 				<td>{{ cw }}</td>
 				{% for task in weekplan %}
 				<td>{{ task }}<br>
-				<input type="checkbox" name="{{ cw + task }}" id="{{ cw + task }}" {% if cw + task in checkarray %} checked {% endif %}></td>
+				<input class="chklarge" type="checkbox" name="{{ cw + task }}" id="{{ cw + task }}" {% if cw + task in checkarray %} checked {% endif %}></td>
 				{% endfor %}
 			</tr>
 		</tbody>
