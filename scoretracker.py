@@ -2,22 +2,25 @@
 """Server app, containing the routes to the Putzplan and Scoretracker
 with a given mongoDB login or local mongoDB you can setup a server
 that is tracking players, games and matchups for statistics"""
-
+import pymongo
 from os import path
-from sys import argv, stderr
+from sys import argv
 from datetime import datetime
 from flask import Flask, render_template, request, redirect, url_for, flash
 import objectlib as olib
 import putzplan as pp
 
-# flask initialization 
+
+# flask initialization
 app = Flask(__name__, static_url_path="/static")
 app.secret_key = b';\xf5!\xa7\xfa\xba\x9b\x94P\x15\n.V\xb9\x0c\xe7'
+
 
 @app.route("/")
 def root():
     """load the root homepage"""
     return render_template("root.html")
+
 
 @app.route("/putzplan", methods=["POST", "GET"])
 def putzplan():
@@ -27,16 +30,20 @@ def putzplan():
     lufile = path.expanduser("~/checkboxes.txt")
     pplist = pp.main(datetime.now().date().isocalendar(), 4)
     if not path.exists(lufile):
-        with open(lufile, "w"): pass
+        with open(lufile, "w"):
+            pass
     if request.method == "GET":
         with open(lufile, "r") as lastchange:
             checkarray = [lol.rstrip() for lol in lastchange.readlines()]
-        return render_template("putzplan.html", mbwlist=pp.MITBEWOHNER, plans=pplist, checkarray=checkarray)
+        return render_template(
+            "putzplan.html",
+            mbwlist=pp.MITBEWOHNER, plans=pplist, checkarray=checkarray)
     if request.method == "POST":
         with open(lufile, "w") as lastchange:
             for checkbox in request.form:
                 lastchange.write(checkbox + "\n")
         return redirect(url_for("putzplan"))
+
 
 @app.route("/scoretracker")
 def scoretracker():
@@ -45,9 +52,10 @@ def scoretracker():
     try:
         mdb.get_serverstatus()
         flash("Server online.", "info")
-    except:
+    except pymongo.errors.ServerSelectionTimeoutError:
         flash("Trouble reaching Database.", "error")
     return render_template("scoretracker.html")
+
 
 @app.route("/scoretracker/submit", methods=["POST", "GET"])
 def st_submit():
@@ -56,14 +64,18 @@ def st_submit():
     if request.method == "GET":
         players = list(mdb.read_table("people"))
         games = mdb.read_table("games")
-        return render_template("st_submit_game.html", players=players, games=games)
+        return render_template(
+            "st_submit_game.html",
+            players=players, games=games)
     if request.method == "POST":
-        if not request.is_json: #form data
+        # form data
+        if not request.is_json:
             update_gamedata(request.form["sgame"])
             update_playerdata(request.form)
             create_matchup(request.form)
             flash("Success.", "info")
-        if request.is_json: #from scipt.js
+        # from scipt.js
+        if request.is_json:
             if request.headers.get("Js-Function", type=str) == "addGame":
                 create_game(request.get_json()["game_name"])
                 flash("Game created.", "info")
@@ -72,6 +84,7 @@ def st_submit():
                 flash("Player created.", "info")
         return redirect(url_for("st_submit"))
 
+
 @app.route("/scoretracker/stats")
 def st_stats():
     """on GET: load data from database and render template
@@ -79,17 +92,22 @@ def st_stats():
     players = mdb.read_table("people")
     games = mdb.read_table("games")
     matchups = mdb.read_table("people")
-    return render_template("st_stats.html", players=players, games=games, matchups=matchups)
+    return render_template(
+        "st_stats.html",
+        players=players, games=games, matchups=matchups)
+
 
 def create_game(game_name):
     """create a game in the games table with the dict from olib"""
     mdb.create_data(olib.Game(game_name).__dict__, "games")
     return 0
 
+
 def create_player(player_name):
     """create a player in the player table with the dict from olib"""
     mdb.create_data(olib.Player(player_name).__dict__, "people")
     return 0
+
 
 def update_gamedata(game_id):
     """set the gamedata and update it in the game table"""
@@ -98,6 +116,7 @@ def update_gamedata(game_id):
     game_data["last_played"] = datetime.now()
     mdb.update_data(game_data, "games")
     return 0
+
 
 def update_playerdata(form_data):
     """set the playerdata and update it in the database"""
@@ -121,8 +140,10 @@ def update_playerdata(form_data):
         mdb.update_data(player_data, "people")
     return 0
 
+
 def create_matchup(form_data):
-    """create a matchup from the formdata and upload it to the matchups table"""
+    """create a matchup from the formdata
+    upload it to the matchups table"""
     new_matchup = {
             "creation_date": datetime.now(),
             "game_played": form_data["sgame"],
@@ -133,6 +154,7 @@ def create_matchup(form_data):
             }
     mdb.create_data(new_matchup, "matchups")
     return 0
+
 
 if __name__ == "__main__":
     usage_desc = """
@@ -149,4 +171,5 @@ if __name__ == "__main__":
         mdb.CLIENT = mdb.connect_client()
         mdb.DB = mdb.set_db(argv[2])
         app.run(debug=True, host="0.0.0.0")
-    else: print(usage_desc)
+    else:
+        print(usage_desc)

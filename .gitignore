@@ -1,6 +1,7 @@
 # should be commonly ignored
 __pycache__/
 env/
+.vscode/
 # are project specific ignores
 license_files/*.lic
 database/*
