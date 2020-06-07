@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-
+"""define classes for database input"""
 from datetime import datetime
 
 PLAYER_LIST = []

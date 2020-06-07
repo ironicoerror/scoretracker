@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-
+"""evaluate putzplan for the last weeks"""
 MITBEWOHNER = ["Flo", "Laura", "Nico", "Paul", "Raffi", "Tobi"]
 
 

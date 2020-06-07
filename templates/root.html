@@ -14,8 +14,8 @@
 		<meta property="og:url" content="localhost" />
 		<meta property="og:image" content="" />
 		<meta property="og:description" content="Tracking scores of various games to mongoDB" />
-		<link rel="stylesheet" href="../static/style.css">
-		<script type="text/javascript" src="../static/script.js"></script>
+		<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
+		<script type="text/javascript" src="{{ url_for('static', filename='script.js') }}"></script>
 	</head>
 	<body>
 		<header>
@@ -32,8 +32,8 @@
 		<h1 class="first">Welcome</h1>
 		<center>
 		<form class="boxxed" method="get">
-			<button class="statistics" type="submit" formaction="/putzplan">Putzplan</button>
-			<button class="game" type="submit" formaction="/scoretracker">Scoretracker</button>
+			<button class="statistics" type="submit" formaction="{{ url_for('putzplan') }}">Putzplan</button>
+			<button class="game" type="submit" formaction="{{ url_for('scoretracker') }}">Scoretracker</button>
 		</form>
 		</center>
 	</body>
