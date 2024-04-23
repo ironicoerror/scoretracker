@@ -1,0 +1,20 @@
+[Unit]
+Description=flask daemon to host website on local network
+Documentation=https://www.github.com/ironicoerror/scoretracker
+Requires=mongodb.service
+After=network.target
+
+[Service]
+User=$USER
+ExecStart=$HOME/Code/scoretracker/scoretracker.py local scoretracker
+Restart=on-failure
+
+# Hardening
+ProtectSystem=full
+PrivateTmp=true
+SystemCallArchitecture=native
+MemoreDenyWriteExecute=true
+NoNewPrivileges=true
+
+[Install]
+WantedBy=multi-user.target
